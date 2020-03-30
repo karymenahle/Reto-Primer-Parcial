@@ -3,10 +3,12 @@ use IEEE.STD_LOGIC_1164.all;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;   
 use IEEE.STD_LOGIC_ARITH.ALL;
 
+
 ENTITY fulladder is
 Port(X,Y,Cin: in std_logic;
      Cout, SUM: out std_logic);
 End fulladder;
+
 
 architecture equations of fulladder is
 begin
@@ -14,39 +16,47 @@ Sum <= X xor Y xor cin;
 cout <= (X and Y) or (X and Cin) or (Y and Cin);
 end equations;
 
+
+
 ENTITY addsub IS
+
    PORT (
+
       A : IN BIT_VECTOR(7 DOWNTO 0);
+
       B : IN BIT_VECTOR(7 DOWNTO 0); 
+
       T : IN BIT;
+
       C_FLAG : OUT BIT;
+
       OV_FLAG : OUT BIT;
+
       R : OUT BIT_VECTOR(7 DOWNTO 0)
+
    );
+
  End addsub;
+
  
+
  architecture addrest of addsub is
+
  component fulladder 
+
  Port(X,Y,Cin: in std_logic;
+
      Cout, SUM: out std_logic);
+
   end component;
+
   
+
  singal c: std_logic_vector(7 downto 1);
+
  begin
- process(T)
- begin 
- if T= '0' then 
- FA0: fulladder port map(A(0), B(0), T, C(1), R(0));
- FA1: fulladder port map(A(1), B(1), C(1), C(2), R(1));
- FA2: fulladder port map(A(2), B(2), C(2), C(3), R(2));
- FA3: fulladder port map(A(3), B(3), C(3), C(4), R(3));
- FA4: fulladder port map(A(4), B(4), C(4), C(5), R(4));
- FA5: fulladder port map(A(5), B(5), C(5), C(6), R(5));
- FA6: fulladder port map(A(6), B(6), C(6), C(7), R(6));
- FA7: fulladder port map(A(7), B(7), C(7), C_FLAG, R(7));
- 
- elsif T='1'
- then 
+
+
  XOR0: B(0) xor T;
  XOR1: B(1) xor T;
  XOR2: B(2) xor T;
@@ -55,8 +65,26 @@ ENTITY addsub IS
  XOR5: B(5) xor T;
  XOR6: B(6) xor T;
  XOR7: B(7) xor T;
+
+
+ if T= '0' then 
+
+ FA0: fulladder port map(A(0), XOR0, T, C(1), R(0));
+ FA1: fulladder port map(A(1), XOR1, C(1), C(2), R(1));
+ FA2: fulladder port map(A(2), XOR2, C(2), C(3), R(2));
+ FA3: fulladder port map(A(3), XOR3, C(3), C(4), R(3));
+ FA4: fulladder port map(A(4), XOR4, C(4), C(5), R(4));
+ FA5: fulladder port map(A(5), XOR5, C(5), C(6), R(5));
+ FA6: fulladder port map(A(6), XOR6, C(6), C(7), R(6));
+ FA7: fulladder port map(A(7), XOR7, C(7), C_FLAG, R(7));
+
  
- 
+
+ elsif T='1'
+
+ then 
+
+
  FR0: fulladder port map(A(0), XOR0, T, C(1), R(0));
  FR1: fulladder port map(A(1), XOR1, C(1), C(2), R(1));
  FR2: fulladder port map(A(2), XOR2, C(2), C(3), R(2));
@@ -65,10 +93,8 @@ ENTITY addsub IS
  FR5: fulladder port map(A(5), XOR5, C(5), C(6), R(5));
  FR6: fulladder port map(A(6), XOR6, C(6), C(7), R(6));
  FR7: fulladder port map(A(7), XOR7, C(7), C_FLAG, R(7));
- 
+
  
  end if;
- end process;
+ OV_FLAG <= C_FLAG;
  end addrest;
-   
-
